@@ -1,5 +1,5 @@
 {
-    "name": "ruFog/tinyuplmngr",
+    "name": "rufog/tinyuplmngr",
     "type": "sci-bundle",
     "description": "TinyMCE + Plupload very minimalistic upload manager",
     "keywords": ["symfony2", "doctrine2", "tinymce", "plupload", "file manager", "form"],
