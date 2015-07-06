@@ -30,6 +30,12 @@ abstract class ContentFile
      */
     protected $uploadedAt;
 
+    public function __construct()
+    {
+        $this->isSubmitted = false;
+        $this->uploadedAt = new \DateTime();
+    }
+
     /**
      * @return mixed
      */
