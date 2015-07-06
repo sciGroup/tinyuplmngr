@@ -8,13 +8,17 @@
     "authors": [
         {
             "name": "Ostretsov Artem"
+        },
+        {
+            "name": "SciGroup Community",
+            "homepage": "https://github.com/sciGroup/tinyuplmngr/graphs/contributors"
         }
     ],
     "require": {
         "symfony/symfony": ">=2.3"
     },
     "autoload": {
-        "psr-0": { "sciGroup\\TinymcePluploadFileManagerBundle": "" }
+        "psr-0": { "SciGroup\\TinymcePluploadFileManagerBundle": "" }
     },
-    "target-dir": "sciGroup/TinymcePluploadFileManagerBundle"
+    "target-dir": "SciGroup/TinymcePluploadFileManagerBundle"
 }
