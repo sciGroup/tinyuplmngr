@@ -19,11 +19,11 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $root = $treeBuilder->root('sg_tpfm');
+        $rootNode = $treeBuilder->root('sg_tpfm');
 
         $supportedDrivers = array('orm');
 
-        $root
+        $rootNode
             ->children()
                 ->scalarNode('db_driver')
                     ->validate()

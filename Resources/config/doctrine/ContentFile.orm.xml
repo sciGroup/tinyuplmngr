@@ -3,7 +3,7 @@
                   xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                   http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-    <entity name="\SciGroup\TinymcePluploadFileManagerBundle\Entity\ContentFile">
+    <entity name="SciGroup\TinymcePluploadFileManagerBundle\Entity\ContentFile">
         <id name="id" type="integer">
             <generator strategy="IDENTITY" />
         </id>
