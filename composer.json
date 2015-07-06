@@ -1,9 +1,9 @@
 {
-    "name": "rufog/tinyuplmngr",
+    "name": "scigroup/tinyuplmngr",
     "type": "sci-bundle",
     "description": "TinyMCE + Plupload very minimalistic upload manager",
     "keywords": ["symfony2", "doctrine2", "tinymce", "plupload", "file manager", "form"],
-    "homepage": "https://github.com/ruFog/tinyuplmngr",
+    "homepage": "https://github.com/sciGroup/tinyuplmngr",
     "license": "MIT",
     "authors": [
         {
@@ -14,7 +14,7 @@
         "symfony/symfony": ">=2.3"
     },
     "autoload": {
-        "psr-0": { "ruFog\\TinymcePluploadFileManagerBundle": "" }
+        "psr-0": { "sciGroup\\TinymcePluploadFileManagerBundle": "" }
     },
-    "target-dir": "ruFog/TinymcePluploadFileManagerBundle"
+    "target-dir": "sciGroup/TinymcePluploadFileManagerBundle"
 }
