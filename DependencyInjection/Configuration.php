@@ -6,6 +6,7 @@
 namespace SciGroup\TinymcePluploadFileManagerBundle\DependencyInjection;
 
 
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -19,7 +20,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('sg_tpfm');
+        $rootNode = $treeBuilder->root('sci_group_tinymce_plupload_file_manager');
 
         $supportedDrivers = array('orm');
 
@@ -31,11 +32,28 @@ class Configuration implements ConfigurationInterface
                         ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($supportedDrivers))
                     ->end()
                     ->cannotBeOverwritten()
-                    ->isRequired()
+                    ->defaultValue('orm')
                     ->cannotBeEmpty()
                 ->end()
             ->end();
+        $this->addMappingSection($rootNode);
 
         return $treeBuilder;
+    }
+
+    private function addMappingSection(ArrayNodeDefinition $node)
+    {
+        $node
+            ->children()
+                ->arrayNode('mappings')
+                    ->useAttributeAsKey('id')
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('path_resolver')->isRequired()->end()
+                            ->scalarNode('base_path')->isRequired()->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
     }
 }
