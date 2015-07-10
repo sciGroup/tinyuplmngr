@@ -35,6 +35,9 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('orm')
                     ->cannotBeEmpty()
                 ->end()
+                ->integerNode('garbage_file_ttl')
+                    ->defaultValue(3600)
+                ->end()
             ->end();
         $this->addMappingSection($rootNode);
 

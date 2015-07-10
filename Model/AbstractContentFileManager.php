@@ -14,4 +14,6 @@ abstract class AbstractContentFileManager
     abstract public function remove(ContentFile $contentFile);
 
     abstract public function findFilesByMappingType($mappingType);
+
+    abstract public function removeGarbageFiles();
 }

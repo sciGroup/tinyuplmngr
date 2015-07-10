@@ -7,6 +7,7 @@
     <services>
         <service id="sci_group.tpfm.content_file_manager" class="SciGroup\TinymcePluploadFileManagerBundle\Doctrine\ContentFileManager">
             <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument>%sci_group_tinymce_plupload_file_manager.garbage_file_ttl%</argument>
         </service>
 
         <service id="sci_group.tpfm.subscriber" class="SciGroup\TinymcePluploadFileManagerBundle\EventListener\Doctrine\ContentFileListener" public="false">

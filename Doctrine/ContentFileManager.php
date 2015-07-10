@@ -18,9 +18,15 @@ class ContentFileManager extends AbstractContentFileManager
      */
     private $entityManager;
 
-    public function __construct(EntityManager $entityManager)
+    /**
+     * @var integer
+     */
+    private $garbageFileTtl;
+
+    public function __construct(EntityManager $entityManager, $garbageFileTtl)
     {
         $this->entityManager = $entityManager;
+        $this->garbageFileTtl = $garbageFileTtl;
     }
 
     public function add(ContentFile $contentFile)
@@ -42,5 +48,19 @@ class ContentFileManager extends AbstractContentFileManager
                 'mappingType' => $mappingType
             ]
         );
+    }
+
+    public function removeGarbageFiles()
+    {
+        $dql = 'SELECT cf FROM SciGroupTinymcePluploadFileManagerBundle:ContentFile cf WHERE cf.uploadedAt < :uploaded_at';
+
+        $threshold = new \DateTime(sprintf('now - %d secs', $this->garbageFileTtl));
+
+        $garbageFiles = $this->entityManager->createQuery($dql)->setParameter('uploaded_at', $threshold)->iterate();
+        foreach ($garbageFiles as $garbageFile) {
+            $this->entityManager->remove($garbageFile[0]);
+        }
+
+        $this->entityManager->flush();
     }
 }

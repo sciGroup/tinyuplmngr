@@ -25,6 +25,7 @@ class SciGroupTinymcePluploadFileManagerExtension extends Extension
         $config = $processor->processConfiguration($configuration, $configs);
 
         $container->setParameter('sci_group_tinymce_plupload_file_manager.mappings', $config['mappings']);
+        $container->setParameter('sci_group_tinymce_plupload_file_manager.garbage_file_ttl', $config['garbage_file_ttl']);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load(sprintf('%s.xml', $config['db_driver']));
