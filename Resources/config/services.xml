@@ -16,7 +16,7 @@
         </service>
 
         <service id="sci_group.validator.content_filed" class="SciGroup\TinymcePluploadFileManagerBundle\Validator\Constraints\ContentFiledValidator">
-            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument type="service" id="sci_group.tpfm.content_file_manager" />
             <argument type="service" id="sci_group.tpfm.mapping_resolver" />
             <tag name="validator.constraint_validator" alias="content_filed" />
         </service>

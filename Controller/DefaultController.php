@@ -23,7 +23,6 @@ class DefaultController extends ContainerAware
         ];
 
         try {
-            $em = $this->container->get('doctrine.orm.default_entity_manager');
             $pathResolver = $this->container->get('sci_group.tpfm.mapping_resolver')->resolve($mappingType);
 
             $fileNames = [];
@@ -40,11 +39,7 @@ class DefaultController extends ContainerAware
                 $contentFile->setMappingType($mappingType);
                 $contentFile->setFileName($fileName);
 
-                $em->persist($contentFile);
-            }
-
-            if (count($fileNames) > 0) {
-                $em->flush();
+                $this->container->get('sci_group.tpfm.content_file_manager')->add($contentFile);
             }
 
             $response['files'] = $fileNames;

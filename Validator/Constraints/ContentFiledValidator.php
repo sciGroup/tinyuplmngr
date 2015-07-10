@@ -6,7 +6,7 @@
 
 namespace SciGroup\TinymcePluploadFileManagerBundle\Validator\Constraints;
 
-use Doctrine\ORM\EntityManager;
+use SciGroup\TinymcePluploadFileManagerBundle\Doctrine\ContentFileManager;
 use SciGroup\TinymcePluploadFileManagerBundle\Resolver\MappingResolver;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -18,17 +18,18 @@ use Symfony\Component\Validator\Mapping\PropertyMetadata;
 class ContentFiledValidator extends ConstraintValidator
 {
     /**
-     * @var EntityManager
+     * @var ContentFileManager
      */
-    private $entityManager;
+    private $contentFileManager;
+
     /**
      * @var MappingResolver
      */
     private $mappingResolver;
 
-    public function __construct(EntityManager $entityManager, MappingResolver $mappingResolver)
+    public function __construct(ContentFileManager $contentFileManager, MappingResolver $mappingResolver)
     {
-        $this->entityManager = $entityManager;
+        $this->contentFileManager = $contentFileManager;
         $this->mappingResolver = $mappingResolver;
     }
 
@@ -37,8 +38,6 @@ class ContentFiledValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        $flushNeeded = false;
-
         foreach ($this->context->getMetadata()->properties as $propertyMetadata) {
             /* @var PropertyMetadata $propertyMetadata */
             foreach ($propertyMetadata->getConstraints() as $constraint) {
@@ -51,50 +50,45 @@ class ContentFiledValidator extends ConstraintValidator
                     }
 
                     $mappingType = $value->$method();
-                    $files = $this->entityManager->getRepository('SciGroupTinymcePluploadFileManagerBundle:ContentFile')->findBy([
-                        'mappingType' => $mappingType
-                    ]);
+                    $files = $this->contentFileManager->findFilesByMappingType($mappingType);
 
                     $accessor = PropertyAccess::createPropertyAccessor();
                     $content = $accessor->getValue($value, $propertyMetadata->getPropertyName());
 
                     // extract all images from content property
-                    preg_match('/src=[\'\"]*(.+?)[\'\"]/', $content, $matches);
+                    preg_match_all('/src=[\'\"]*(.+?)[\'\"]/', $content, $matches);
                     array_shift($matches);
+                    if (count($matches[0]) > 0) {
+                        $matches = $matches[0];
 
-                    foreach ($matches as $imgFile) {
-                        $imgFile = preg_replace('/\?.*$/', '', $imgFile);
-                        $imgFile = pathinfo($imgFile, PATHINFO_BASENAME);
-                        foreach ($files as $key => $file) {
-                            /* @var \SciGroup\TinymcePluploadFileManagerBundle\Model\ContentFile $file */
-                            if ($file->getFileName() == $imgFile) {
-                                $file->setIsSubmitted(true);
-                                unset($files[$key]);
-                                $flushNeeded = true;
+                        foreach ($matches as $imgFile) {
+                            $imgFile = preg_replace('/\?.*$/', '', $imgFile);
+                            $imgFile = pathinfo($imgFile, PATHINFO_BASENAME);
+                            foreach ($files as $key => $file) {
+                                /* @var \SciGroup\TinymcePluploadFileManagerBundle\Model\ContentFile $file */
+                                if ($file->getFileName() == $imgFile) {
+                                    $file->setIsSubmitted(true);
+                                    unset($files[$key]);
 
-                                continue 2;
+                                    continue 2;
+                                }
                             }
-                        }
 
-                        // remove file
-                        $pathResolver = $this->mappingResolver->resolve($mappingType);
+                            // remove file
+                            $pathResolver = $this->mappingResolver->resolve($mappingType);
 
-                        $imgFile = $pathResolver->getDirectory(true).'/'.$imgFile;
-                        if (file_exists($imgFile)) {
-                            unlink($imgFile);
+                            $imgFile = $pathResolver->getDirectory(true).'/'.$imgFile;
+                            if (file_exists($imgFile)) {
+                                unlink($imgFile);
+                            }
                         }
                     }
 
                     foreach ($files as $file) {
-                        $this->entityManager->remove($file);
-                        $flushNeeded = true;
+                        $this->contentFileManager->remove($file);
                     }
                 }
             }
-        }
-
-        if ($flushNeeded) {
-            $this->entityManager->flush();
         }
     }
 }
