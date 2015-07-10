@@ -7,23 +7,32 @@
 namespace SciGroup\TinymcePluploadFileManagerBundle\Resolver;
 
 
+use SciGroup\TinymcePluploadFileManagerBundle\PathResolver\FileManager\AbstractPathResolver;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 class MappingResolver
 {
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
     /**
      * @var array
      */
     private $mappings;
 
-    public function __construct(array $mappings)
+    public function __construct(ContainerInterface $container)
     {
-        $this->mappings = $mappings;
+        $this->container = $container;
+        $this->mappings = $container->getParameter('sci_group_tinymce_plupload_file_manager.mappings');
     }
 
     /**
      * Resolve mapping name
      *
      * @param $name
-     * @return array
+     * @return AbstractPathResolver
      */
     public function resolve($name)
     {
@@ -36,12 +45,18 @@ class MappingResolver
 
                 $args = array_combine($mappingNameParts, $nameParts);
 
-                return array_merge($mappingValue, [
+                $mapping = array_merge($mappingValue, [
                     'args' => $args
                 ]);
+
+                $pathResolver = $this->container->get($mapping['path_resolver']);
+                /* @var AbstractPathResolver $pathResolver */
+                $pathResolver->setMapping($mapping);
+
+                return $pathResolver;
             }
         }
 
-        throw new \InvalidArgumentException(sprintf('Mapping type %s is not defined!', $mappingType));
+        throw new \InvalidArgumentException(sprintf('Mapping type %s is not defined!', $name));
     }
 }

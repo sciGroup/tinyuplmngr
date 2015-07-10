@@ -4,8 +4,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <!--<services>-->
-<!---->
-    <!--</services>-->
+    <services>
+        <service id="sci_group.orm.subscriber" class="SciGroup\TinymcePluploadFileManagerBundle\EventListener\Doctrine\ContentFileListener" public="false">
+            <argument type="service" id="sci_group.tpfm.mapping_resolver" />
+            <tag name="doctrine.event_subscriber" connection="default" />
+        </service>
+    </services>
 
 </container>

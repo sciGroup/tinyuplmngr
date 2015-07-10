@@ -79,7 +79,7 @@ abstract class ContentFile
     /**
      * @return boolean
      */
-    public function isIsSubmitted()
+    public function getIsSubmitted()
     {
         return $this->isSubmitted;
     }
@@ -93,7 +93,7 @@ abstract class ContentFile
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getUploadedAt()
     {
@@ -101,7 +101,7 @@ abstract class ContentFile
     }
 
     /**
-     * @param DateTime $uploadedAt
+     * @param \DateTime $uploadedAt
      */
     public function setUploadedAt($uploadedAt)
     {

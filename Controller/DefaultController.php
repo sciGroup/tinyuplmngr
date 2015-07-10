@@ -7,7 +7,7 @@
 namespace SciGroup\TinymcePluploadFileManagerBundle\Controller;
 
 
-use SciGroup\TinymcePluploadFileManagerBundle\PathResolver\FileManager\AbstractPathResolver;
+use SciGroup\TinymcePluploadFileManagerBundle\Entity\ContentFile;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,12 +23,8 @@ class DefaultController extends ContainerAware
         ];
 
         try {
-            $mapping = $this->container->get('sci_group.tpfm.mapping_resolver')->resolve($mappingType);
-
-            $pathResolver = $this->container->get($mapping['path_resolver']);
-            /* @var AbstractPathResolver $pathResolver */
-            $pathResolver->setMapping($mapping);
-            $pathResolver->setWebDirectory($this->container->getParameter('kernel.root_dir').'/../web');
+            $em = $this->container->get('doctrine.orm.default_entity_manager');
+            $pathResolver = $this->container->get('sci_group.tpfm.mapping_resolver')->resolve($mappingType);
 
             $fileNames = [];
             foreach ($request->files as $uploadedFile) {
@@ -39,6 +35,16 @@ class DefaultController extends ContainerAware
                 $uploadedFile->move($dstDirectory, $fileName);
 
                 $fileNames[] = $pathResolver->getDirectory().'/'.$fileName;
+
+                $contentFile = new ContentFile();
+                $contentFile->setMappingType($mappingType);
+                $contentFile->setFileName($fileName);
+
+                $em->persist($contentFile);
+            }
+
+            if (count($fileNames) > 0) {
+                $em->flush();
             }
 
             $response['files'] = $fileNames;
