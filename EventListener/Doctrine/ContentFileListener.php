@@ -9,7 +9,10 @@ namespace SciGroup\TinymcePluploadFileManagerBundle\EventListener\Doctrine;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use SciGroup\TinymcePluploadFileManagerBundle\Doctrine\ContentFileManager;
 use SciGroup\TinymcePluploadFileManagerBundle\Model\ContentFile;
+use SciGroup\TinymcePluploadFileManagerBundle\Model\ContentFiledInterface;
+use SciGroup\TinymcePluploadFileManagerBundle\Model\ContentFiledManager;
 use SciGroup\TinymcePluploadFileManagerBundle\Resolver\MappingResolver;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -44,6 +47,14 @@ class ContentFileListener implements EventSubscriber
             $file = $pathResolver->getDirectory(true).'/'.$object->getFileName();
             if (file_exists($file)) {
                 unlink($file);
+            }
+        } elseif ($object instanceof ContentFiledInterface) {
+            $contentFileManager = new ContentFileManager($event->getEntityManager(), 0);
+            $filedManager = new ContentFiledManager($contentFileManager);
+
+            $contentFiles = $filedManager->getContentFiles($object);
+            foreach ($contentFiles as $contentFile) {
+                $event->getEntityManager()->remove($contentFile);
             }
         }
     }

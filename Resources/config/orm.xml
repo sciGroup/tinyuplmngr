@@ -10,10 +10,13 @@
             <argument>%sci_group_tinymce_plupload_file_manager.garbage_file_ttl%</argument>
         </service>
 
-        <service id="sci_group.tpfm.subscriber" class="SciGroup\TinymcePluploadFileManagerBundle\EventListener\Doctrine\ContentFileListener" public="false">
+        <service id="sci_group.tpfm.content_filed_manager" class="SciGroup\TinymcePluploadFileManagerBundle\Model\ContentFiledManager">
+            <argument type="service" id="sci_group.tpfm.content_file_manager" />
+        </service>
+
+        <service id="sci_group.tpfm.content_file.subscriber" class="SciGroup\TinymcePluploadFileManagerBundle\EventListener\Doctrine\ContentFileListener" public="false">
             <argument type="service" id="sci_group.tpfm.mapping_resolver" />
             <tag name="doctrine.event_subscriber" connection="default" />
         </service>
     </services>
-
 </container>

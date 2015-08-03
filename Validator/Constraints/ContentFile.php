@@ -20,13 +20,16 @@ class ContentFile extends Constraint
      */
     public $mapping;
 
+    public $mappingTypeMethod;
+
     /**
      * {@inheritdoc}
      */
     public function getRequiredOptions()
     {
         return [
-            'mapping'
+            'mapping',
+            'mappingTypeMethod'
         ];
     }
 }
