@@ -1,0 +1,65 @@
+{% macro plupload(env, sessionId, mappingType, maxFileSize) %}
+    <script type="text/javascript">
+        var PluploadHandler = function($, plupload, editorSelector) {
+            this.plupload = plupload;
+
+            this.uploader = new plupload.Uploader({
+                runtimes : 'html5,flash,silverlight,html4',
+                browse_button : document.getElementById('sci-upload-button_'+editorSelector),
+                {% set pathParams = { sessionId: sessionId } %}
+                {% if env == 'dev' %}
+                {% set pathParams = pathParams|merge({'XDEBUG_SESSION': 'default'}) %}
+                {% endif %}
+                url : '/sci-group/tpfm/{{ mappingType }}/upload?{{ pathParams|url_encode }}',
+                flash_swf_url : '/js/plupload/js/Moxie.swf',
+                silverlight_xap_url : '/js/plupload/js/Moxie.xap',
+                unique_names: true,
+                multi_selection: true,
+
+                filters : {
+                    max_file_size : '{{ maxFileSize }}mb',
+                    mime_types: [
+                        {title : "Image files", extensions : "jpg,jpeg,gif,png"}
+                    ]
+                },
+                init: {
+                    PostInit: function() {
+                        $('.filelist').html('');
+                    },
+                    Error: function(up, err) {
+                        console.log("\nError #" + err.code + ": " + err.message);
+                    }
+                }
+            });
+
+            this.uploader.init();
+            this.uploader.bind("FilesAdded", handlePluploadFilesAdded);
+            this.uploader.bind("FileUploaded", handlePluploadFileUploaded);
+
+            function handlePluploadFilesAdded(up, files) {
+                up.start();
+            }
+
+            function handlePluploadFileUploaded(up, file, res) {
+                var response = jQuery.parseJSON(res.response);
+
+                response.files.forEach(function(item){
+                    var img = "<img src='" + item + "?" + Date.now() + "'>";
+                    tinymce.activeEditor.execCommand('mceInsertContent', false, img);
+                });
+            }
+        }
+
+        function setupUploadButton(editor, editorSelector) {
+            editor.addButton('sciUploadButton', {
+                type: 'button',
+                title: 'Insert image',
+                icon: 'image',
+                id: 'sci-upload-button_'+editorSelector
+            });
+            editor.on('init', function(e) {
+                var pluploadHandler = new PluploadHandler(jQuery, plupload, editorSelector);
+            });
+        }
+    </script>
+{% endmacro %}

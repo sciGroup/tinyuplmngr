@@ -49,11 +49,26 @@ class ContentFiledValidator extends ConstraintValidator
                         );
                     }
 
+                    $accessor = PropertyAccess::createPropertyAccessor();
+                    $propertyName = $propertyMetadata->getPropertyName();
+                    $content = $accessor->getValue($value, $propertyName);
+
+                    // check also translations
+                    if ($translations = $accessor->getValue($value, 'translations')) {
+                        foreach ($translations as $translation) {
+                            if ($translation->getField() == $propertyName) {
+                                $content .= $translation->getContent();
+                            }
+                        }
+                    }
+
+                    $content = trim($content);
+                    if (mb_strlen($content) == 0) {
+                        return;
+                    }
+
                     $mappingType = $value->$method();
                     $files = $this->contentFileManager->findFilesByMappingType($mappingType);
-
-                    $accessor = PropertyAccess::createPropertyAccessor();
-                    $content = $accessor->getValue($value, $propertyMetadata->getPropertyName());
 
                     // extract all images from content property
                     preg_match_all('/src=[\'\"]*(.+?)[\'\"]/', $content, $matches);
