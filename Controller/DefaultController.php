@@ -8,13 +8,15 @@ namespace SciGroup\TinymcePluploadFileManagerBundle\Controller;
 
 
 use SciGroup\TinymcePluploadFileManagerBundle\Entity\ContentFile;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class DefaultController extends ContainerAware
+class DefaultController
 {
+    use ContainerAwareTrait;
+    
     public function uploadAction(Request $request, $mappingType)
     {
         $response = [
