@@ -5,6 +5,6 @@
         xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="sci_group_tpfm_upload" path="/sci-group/tpfm/{mappingType}/upload" methods="POST">
-        <default key="_controller">SciGroupTinymcePluploadFileManagerBundle:Default:upload</default>
+        <default key="_controller">SciGroup\TinymcePluploadFileManagerBundle\Controller\DefaultController::uploadAction</default>
     </route>
 </routes>
