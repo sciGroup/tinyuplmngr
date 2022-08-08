@@ -19,8 +19,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('sci_group_tinymce_plupload_file_manager');
+        $treeBuilder = new TreeBuilder('sci_group_tinymce_plupload_file_manager');
+        $rootNode = $treeBuilder->getRootNode();
 
         $supportedDrivers = array('orm');
 

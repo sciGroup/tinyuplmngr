@@ -7,8 +7,8 @@ namespace SciGroup\TinymcePluploadFileManagerBundle\DependencyInjection;
 
 
 use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 
@@ -27,8 +27,8 @@ class SciGroupTinymcePluploadFileManagerExtension extends Extension
         $container->setParameter('sci_group_tinymce_plupload_file_manager.mappings', $config['mappings']);
         $container->setParameter('sci_group_tinymce_plupload_file_manager.garbage_file_ttl', $config['garbage_file_ttl']);
 
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load(sprintf('%s.xml', $config['db_driver']));
-        $loader->load('services.xml');
+        $yamlFileLoader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $yamlFileLoader->load(sprintf('%s.yaml', $config['db_driver']));
+        $yamlFileLoader->load('services.yaml');
     }
 }

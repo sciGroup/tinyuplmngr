@@ -1,0 +1,22 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    SciGroup\TinymcePluploadFileManagerBundle\Command\GarbageCollectorCommand:
+        tags: [ 'console.command' ]
+
+    SciGroup\TinymcePluploadFileManagerBundle\Controller\DefaultController:
+        tags: [ 'controller.service_arguments' ]
+
+    SciGroup\TinymcePluploadFileManagerBundle\Resolver\MappingResolver: ~
+
+    SciGroup\TinymcePluploadFileManagerBundle\Validator\Constraints\ContentFiledValidator:
+        tags:
+            - { name: 'validator.constraint_validator', alias: 'content_filed' }
+
+    sci_group.tpfm.path_resolver:
+        abstract: true
+        calls:
+            - [ setWebDirectory, [ '@=parameter("kernel.project_dir") ~ "/web"' ] ]

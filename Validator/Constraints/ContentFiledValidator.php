@@ -17,15 +17,8 @@ use Symfony\Component\Validator\Mapping\PropertyMetadata;
 
 class ContentFiledValidator extends ConstraintValidator
 {
-    /**
-     * @var ContentFileManager
-     */
-    private $contentFileManager;
-
-    /**
-     * @var MappingResolver
-     */
-    private $mappingResolver;
+    private ContentFileManager $contentFileManager;
+    private MappingResolver $mappingResolver;
 
     public function __construct(ContentFileManager $contentFileManager, MappingResolver $mappingResolver)
     {

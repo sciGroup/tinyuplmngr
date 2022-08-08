@@ -12,20 +12,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class MappingResolver
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * @var array
-     */
-    private $mappings;
+    private ContainerInterface $container;
+    private array $mappings;
 
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->mappings = $container->getParameter('sci_group_tinymce_plupload_file_manager.mappings');
+        $this->mappings = $container->getParameter('sci_group_tinymce_plupload_file_manager.mappings') ?? [];
     }
 
     /**
@@ -39,7 +32,7 @@ class MappingResolver
         foreach ($this->mappings as $mappingName => $mappingValue) {
             $mappingNameParts = explode('_', $mappingName);
             $nameParts = explode('_', $name);
-            if ($nameParts[0] == $mappingNameParts[0]) {
+            if ($nameParts[0] === $mappingNameParts[0]) {
                 array_shift($mappingNameParts);
                 array_shift($nameParts);
 

@@ -1,0 +1,17 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    SciGroup\TinymcePluploadFileManagerBundle\Doctrine\ContentFileManager:
+        arguments:
+            $garbageFileTtl: '%sci_group_tinymce_plupload_file_manager.garbage_file_ttl%'
+
+    SciGroup\TinymcePluploadFileManagerBundle\Model\ContentFiledManager:
+        arguments:
+            $contentFileManager: SciGroup\TinymcePluploadFileManagerBundle\Doctrine\ContentFileManager
+
+    SciGroup\TinymcePluploadFileManagerBundle\EventListener\Doctrine\ContentFileListener:
+        tags:
+            - { name: 'doctrine.event_subscriber', connection: 'default' }

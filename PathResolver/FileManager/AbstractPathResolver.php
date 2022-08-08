@@ -7,31 +7,26 @@
 namespace SciGroup\TinymcePluploadFileManagerBundle\PathResolver\FileManager;
 
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 abstract class AbstractPathResolver
 {
-    /**
-     * @var array
-     */
-    protected $mapping;
-
-    /**
-     * @var string
-     */
-    protected $webDirectory;
+    protected ?array $mapping;
+    protected ?string $webDirectory;
 
     abstract public function getDirectory($absolute = false);
 
-    public function setMapping(array $mapping)
+    public function setMapping(array $mapping): void
     {
         $this->mapping = $mapping;
     }
 
-    public function setWebDirectory($dir)
+    public function setWebDirectory(string $dir): void
     {
         $this->webDirectory = $dir;
     }
 
-    public function generateFileName($uploadedFile)
+    public function generateFileName(UploadedFile $uploadedFile): string
     {
         $mappingUrl = [];
         foreach ($this->mapping['args'] as $key => $value) {
@@ -41,6 +36,6 @@ abstract class AbstractPathResolver
         $hash = sha1(sha1($this->mapping['path_resolver'].'?'.implode('&', $mappingUrl)).sha1(uniqid(mt_rand(), true)));
         $extension = strtolower($uploadedFile->getClientOriginalExtension());
 
-        return $hash.(strlen($extension) > 0 ? '.'.$extension : '');
+        return $hash.($extension !== '' ? '.'.$extension : '');
     }
 }

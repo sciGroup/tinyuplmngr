@@ -7,15 +7,17 @@
 namespace SciGroup\TinymcePluploadFileManagerBundle\Controller;
 
 
+use SciGroup\TinymcePluploadFileManagerBundle\Doctrine\ContentFileManager;
 use SciGroup\TinymcePluploadFileManagerBundle\Entity\ContentFile;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use SciGroup\TinymcePluploadFileManagerBundle\Resolver\MappingResolver;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class DefaultController extends Controller
+class DefaultController extends AbstractController
 {
-    public function uploadAction(Request $request, $mappingType)
+    public function uploadAction(Request $request, $mappingType, MappingResolver $mappingResolver, ContentFileManager $contentFileManager)
     {
         $response = [
             'status' => 0,
@@ -23,7 +25,7 @@ class DefaultController extends Controller
         ];
 
         try {
-            $pathResolver = $this->container->get('sci_group.tpfm.mapping_resolver')->resolve($mappingType);
+            $pathResolver = $mappingResolver->resolve($mappingType);
 
             $fileNames = [];
             foreach ($request->files as $uploadedFile) {
@@ -39,7 +41,7 @@ class DefaultController extends Controller
                 $contentFile->setMappingType($mappingType);
                 $contentFile->setFileName($fileName);
 
-                $this->container->get('sci_group.tpfm.content_file_manager')->add($contentFile);
+                $contentFileManager->add($contentFile);
             }
 
             $response['files'] = $fileNames;

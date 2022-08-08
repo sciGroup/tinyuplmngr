@@ -7,50 +7,44 @@
 namespace SciGroup\TinymcePluploadFileManagerBundle\Doctrine;
 
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use SciGroup\TinymcePluploadFileManagerBundle\Model\AbstractContentFileManager;
 use SciGroup\TinymcePluploadFileManagerBundle\Model\ContentFile;
+use SciGroup\TinymcePluploadFileManagerBundle\Entity\ContentFile as EntityContentFile;
 
 class ContentFileManager extends AbstractContentFileManager
 {
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
+    private int $garbageFileTtl;
 
-    /**
-     * @var integer
-     */
-    private $garbageFileTtl;
-
-    public function __construct(EntityManager $entityManager, $garbageFileTtl)
+    public function __construct(EntityManagerInterface $entityManager, $garbageFileTtl)
     {
         $this->entityManager = $entityManager;
-        $this->garbageFileTtl = $garbageFileTtl;
+        $this->garbageFileTtl = (int)$garbageFileTtl;
     }
 
-    public function add(ContentFile $contentFile)
+    public function add(ContentFile $contentFile): void
     {
         $this->entityManager->persist($contentFile);
         $this->entityManager->flush();
     }
 
-    public function remove(ContentFile $contentFile)
+    public function remove(ContentFile $contentFile): void
     {
         $this->entityManager->remove($contentFile);
         $this->entityManager->flush();
     }
 
-    public function findFilesByMappingType($mappingType)
+    public function findFilesByMappingType($mappingType): array
     {
-        return $this->entityManager->getRepository('SciGroupTinymcePluploadFileManagerBundle:ContentFile')->findBy(
+        return $this->entityManager->getRepository(EntityContentFile::class)->findBy(
             [
                 'mappingType' => $mappingType
             ]
         );
     }
 
-    public function removeGarbageFiles()
+    public function removeGarbageFiles(): void
     {
         $dql = 'SELECT cf FROM SciGroupTinymcePluploadFileManagerBundle:ContentFile cf WHERE cf.uploadedAt < :uploaded_at';
 

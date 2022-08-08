@@ -6,17 +6,26 @@
 
 namespace SciGroup\TinymcePluploadFileManagerBundle\Command;
 
-
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use SciGroup\TinymcePluploadFileManagerBundle\Doctrine\ContentFileManager;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GarbageCollectorCommand extends ContainerAwareCommand
+class GarbageCollectorCommand extends Command
 {
+    private ContentFileManager $contentFileManager;
+
+    public function __construct(ContentFileManager $contentFileManager)
+    {
+        $this->contentFileManager = $contentFileManager;
+
+        parent::__construct();
+    }
+
     /**
      * @see Command
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('scigroup:tpfm:garbage-collector')
@@ -27,8 +36,10 @@ class GarbageCollectorCommand extends ContainerAwareCommand
     /**
      * @see Command
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->getContainer()->get('sci_group.tpfm.content_file_manager')->removeGarbageFiles();
+        $this->contentFileManager->removeGarbageFiles();
+
+        return 0;
     }
 }

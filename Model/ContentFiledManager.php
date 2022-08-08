@@ -13,17 +13,14 @@ use SciGroup\TinymcePluploadFileManagerBundle\Validator\Constraints\ContentFile 
 
 class ContentFiledManager
 {
-    /**
-     * @var AbstractContentFileManager
-     */
-    private $contentFileManager;
+    private AbstractContentFileManager $contentFileManager;
 
     public function __construct(AbstractContentFileManager $contentFileManager)
     {
         $this->contentFileManager = $contentFileManager;
     }
 
-    public function getContentFiles($object)
+    public function getContentFiles($object): array
     {
         $reflectedClass = new \ReflectionClass($object);
         $reader = new AnnotationReader();

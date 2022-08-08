@@ -14,15 +14,10 @@ use SciGroup\TinymcePluploadFileManagerBundle\Model\ContentFile;
 use SciGroup\TinymcePluploadFileManagerBundle\Model\ContentFiledInterface;
 use SciGroup\TinymcePluploadFileManagerBundle\Model\ContentFiledManager;
 use SciGroup\TinymcePluploadFileManagerBundle\Resolver\MappingResolver;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ContentFileListener implements EventSubscriber
 {
-    /**
-     * @var MappingResolver
-     */
-    private $mappingResolver;
+    private MappingResolver $mappingResolver;
 
     public function __construct(MappingResolver $mappingResolver)
     {
@@ -34,9 +29,9 @@ class ContentFileListener implements EventSubscriber
      */
     public function getSubscribedEvents()
     {
-        return array(
-            'preRemove'
-        );
+        return [
+            'preRemove',
+        ];
     }
 
     public function preRemove(LifecycleEventArgs $event)
